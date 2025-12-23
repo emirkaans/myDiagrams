@@ -1,34 +1,23 @@
-## Kategori Öneri Algoritması – Akış Diyagramı
+flowchart LR
+  A([Fonksiyon Başlar]) --> B[Inputları Al & Normalize Et]
+  B --> C{Alerjen Kontrolü}
+  C -- Var --> D[Hard Block: Uyuşmayanları Çıkar]
+  C -- Yok --> E[Devam Et]
 
-```mermaid
-flowchart TD
-  A([Uygulama Başlar / Fonksiyon Çağrılır]) --> B[Inputları al: userProfile, allCategories, context, limit]
-  B --> C[Verileri normalize et: küçük harf, trim, eşleştirme mapleri]
-  C --> D{Alerjen var mı?}
-  D -- Evet --> E[Hard Block: Alerjenle ilişkili kategorileri tamamen çıkar]
-  D -- Hayır --> F[Hard Block yok]
-  E --> G[Skor tablosu oluştur: categoryScores = 0]
-  F --> G
+  D --> F[Skor Tablosu Oluştur]
+  E --> F
 
-  G --> H[User seviyesini hesapla: cold / mature]
-  H --> I[Weight'leri belirle]
-  I --> J[Profil kategorilerine puan ekle]
-  J --> K[Soft Block: Diyete uymayanlara ceza]
-  K --> L[Diyete uygunlara bonus]
-  L --> M[Favorilerden puan ekle]
-  M --> N[Son görüntülenenlerden recency puanı]
-  N --> O[Bağlam ekle: saat/mevsim]
+  F --> G[Kullanıcı Seviyesi Belirle<br/>(Cold / Mature)]
+  G --> H[Ağırlıkları Ayarla]
 
-  O --> P[Hard-block edilenleri çıkar]
-  P --> Q[Skora göre sırala]
-  Q --> R{Pozitif skor var mı?}
-  R -- Evet --> S[Pozitiflerden limit kadar seç]
-  R -- Hayır --> T[En üstten limit kadar seç]
+  H --> I[Profil & Diyet Etkisi]
+  I --> J[Favori & Geçmiş Etkileşimler]
+  J --> K[Zamansal / Bağlamsal Bonus]
 
-  S --> U{Limit doldu mu?}
-  T --> U
-  U -- Hayır --> V[Fallback ile doldur]
-  U -- Evet --> W[Sonuç hazır]
+  K --> L[Filtrele & Sırala]
+  L --> M{Pozitif Skor Var mı?}
+  M -- Evet --> N[En İyi Kategorileri Seç]
+  M -- Hayır --> O[Varsayılan Kategoriler]
 
-  V --> W
-  W --> X([Return: topCategories])
+  N --> P([Sonuç])
+  O --> P
